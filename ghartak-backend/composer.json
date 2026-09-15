@@ -1,0 +1,22 @@
+{
+    "name": "ghartak/backend",
+    "description": "GharTak local parcel delivery REST API",
+    "type": "project",
+    "require": {
+        "php": "^8.1",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
+        "firebase/php-jwt": "^6.10",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "minimum-stability": "stable"
+}
