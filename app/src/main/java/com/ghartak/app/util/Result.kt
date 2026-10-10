@@ -2,7 +2,7 @@ package com.ghartak.app.util
 
 /**
  * Wraps a value coming from a repository/use-case boundary so ViewModels never need to catch
- * exceptions from Retrofit/Room directly.
+ * exceptions from Firestore/Firebase Auth directly.
  */
 sealed class Result<out T> {
     data class Success<T>(val data: T) : Result<T>()

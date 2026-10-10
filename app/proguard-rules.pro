@@ -1,20 +1,16 @@
-# Keep Retrofit/OkHttp/Kotlin Serialization models
+# Firebase / Firestore — the SDK ships its own consumer ProGuard rules, these just cover the
+# classes we construct reflectively or expect in stack traces.
+-keepattributes Signature
 -keepattributes *Annotation*
--keepclassmembers class * {
-    @kotlinx.serialization.Serializable *;
-}
--keep,includedescriptorclasses class com.ghartak.app.data.remote.dto.**$$serializer { *; }
--keepclassmembers class com.ghartak.app.data.remote.dto.** {
-    *** Companion;
-}
--keepclasseswithmembers class com.ghartak.app.data.remote.dto.** {
-    kotlinx.serialization.KSerializer serializer(...);
-}
+-keep class com.google.firebase.** { *; }
 
-# Room
--keep class * extends androidx.room.RoomDatabase
--dontwarn androidx.room.paging.**
+# Keep domain model classes used as Firestore document fields readable in Crashlytics stack traces.
+-keep class com.ghartak.app.domain.model.** { *; }
 
 # Hilt
 -keep class dagger.hilt.** { *; }
 -keep class javax.inject.** { *; }
+
+# Crashlytics — keep file/line number info for de-obfuscated stack traces.
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile

@@ -23,10 +23,17 @@ interface DeliveryRepository {
 
     suspend fun getDelivery(deliveryId: String): Result<Delivery>
 
-    /** Polls / streams delivery + rider location for the live tracking screen. */
+    /** Real-time delivery + rider-location stream for the live tracking screen (Firestore snapshot listeners). */
     fun observeTracking(deliveryId: String): Flow<Result<Pair<Delivery, RiderLocationUpdate?>>>
 
-    suspend fun getDeliveryHistory(page: Int, pageSize: Int): Result<List<Delivery>>
+    /**
+     * Cursor-paginated delivery history, newest first. Pass the last item from the previous
+     * page as [lastVisible]; omit it for the first page.
+     */
+    suspend fun getDeliveryHistory(pageSize: Int, lastVisible: Delivery? = null): Result<List<Delivery>>
 
     suspend fun verifyDeliveryOtp(deliveryId: String, otp: String): Result<Delivery>
+
+    /** Uploads a parcel/delivery-proof photo to Firebase Storage and returns its download URL. */
+    suspend fun uploadParcelImage(localFileUri: String, deliveryId: String): Result<String>
 }

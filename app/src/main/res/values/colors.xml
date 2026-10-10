@@ -1,3 +1,4 @@
 <resources>
-    <color name="splash_background">#FFFFFF</color>
+    <color name="splash_background">#4F46E5</color>
+    <color name="app_background">#F6F7FB</color>
 </resources>

@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.ghartak.app" />
+                  <option name="mobileSdkAppId" value="1:96446843235:android:f4656ae115f4e03b31eb56" />
+                  <option name="projectId" value="ghartak-577cb" />
+                  <option name="projectNumber" value="96446843235" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
