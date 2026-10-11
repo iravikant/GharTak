@@ -5,6 +5,7 @@ import com.ghartak.app.domain.model.Delivery
 import com.ghartak.app.domain.model.DeliveryStatus
 import com.ghartak.app.domain.model.LatLngPoint
 import com.ghartak.app.domain.model.ParcelType
+import com.ghartak.app.domain.model.PaymentMethod
 import com.ghartak.app.domain.model.PaymentStatus
 import com.ghartak.app.domain.model.RiderLocationUpdate
 import com.ghartak.app.domain.model.User
@@ -82,6 +83,8 @@ fun buildDeliveryCreateMap(
     parcelWeightKg: Double?,
     parcelDescription: String?,
     parcelImageUrl: String?,
+    specialInstructions: String?,
+    paymentMethod: PaymentMethod,
     deliveryFee: Double,
     platformFee: Double,
     otp: String
@@ -96,6 +99,8 @@ fun buildDeliveryCreateMap(
     "parcelWeightKg" to parcelWeightKg,
     "parcelDescription" to parcelDescription,
     "parcelImageUrl" to parcelImageUrl,
+    "specialInstructions" to specialInstructions,
+    "paymentMethod" to paymentMethod.name,
     "deliveryFee" to deliveryFee,
     "platformFee" to platformFee,
     "totalAmount" to deliveryFee + platformFee,
@@ -118,6 +123,9 @@ fun DocumentSnapshot.toDelivery(): Delivery = Delivery(
     parcelWeightKg = dblOrNull("parcelWeightKg"),
     parcelDescription = strOrNull("parcelDescription"),
     parcelImageUrl = strOrNull("parcelImageUrl"),
+    specialInstructions = strOrNull("specialInstructions"),
+    paymentMethod = runCatching { PaymentMethod.valueOf(str("paymentMethod")) }.getOrDefault(PaymentMethod.CASH),
+    deliveryOtp = strOrNull("otp"),
     deliveryFee = dbl("deliveryFee"),
     platformFee = dbl("platformFee"),
     totalAmount = dbl("totalAmount"),

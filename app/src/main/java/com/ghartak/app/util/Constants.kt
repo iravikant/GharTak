@@ -1,6 +1,13 @@
 package com.ghartak.app.util
 
 object Constants {
+    /**
+     * DEV ONLY. false = new riders start as PENDING and an admin approves them (set approvalStatus to
+     * APPROVED in the Firestore console). true = riders are approved instantly — only works if you also
+     * relax the riders create rule in firebase/firestore.rules (see the comment there).
+     */
+    const val AUTO_APPROVE_RIDERS = false
+
     /** Result.Error.code used when the user dismissed a system sign-in sheet (not a real failure). */
     const val ERROR_CODE_CANCELLED = "CANCELLED"
     const val RESEND_OTP_SECONDS = 30

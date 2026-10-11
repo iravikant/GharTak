@@ -66,6 +66,8 @@ import java.util.Calendar
 @Composable
 fun HomeScreen(
     onSendParcel: () -> Unit,
+    onServiceSelected: (ParcelType) -> Unit,
+    onSeeAllServices: () -> Unit,
     onOpenDelivery: (String) -> Unit,
     onOpenNotifications: () -> Unit,
     onTabSelected: (MainTab) -> Unit,
@@ -92,7 +94,18 @@ fun HomeScreen(
                 )
             }
 
-            item { SectionTitle("Services", modifier = Modifier.padding(top = 20.dp)) }
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 8.dp, top = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text("Services", style = MaterialTheme.typography.titleLarge)
+                    TextButton(onClick = onSeeAllServices) { Text("See all") }
+                }
+            }
             item {
                 LazyRow(
                     contentPadding = PaddingValues(horizontal = 20.dp),
@@ -100,7 +113,7 @@ fun HomeScreen(
                     modifier = Modifier.padding(top = 12.dp)
                 ) {
                     items(ParcelType.entries.toList()) { type ->
-                        ServiceTile(type = type, onClick = onSendParcel)
+                        ServiceTile(type = type, onClick = { onServiceSelected(type) })
                     }
                 }
             }

@@ -12,6 +12,10 @@ data class Delivery(
     val parcelWeightKg: Double?,
     val parcelDescription: String?,
     val parcelImageUrl: String? = null,
+    val specialInstructions: String? = null,
+    val paymentMethod: PaymentMethod = PaymentMethod.CASH,
+    /** Handover code the customer shares with the receiver; riders must enter it to complete delivery. */
+    val deliveryOtp: String? = null,
     val deliveryFee: Double,
     val platformFee: Double,
     val totalAmount: Double,

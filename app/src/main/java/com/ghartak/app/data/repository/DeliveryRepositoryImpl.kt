@@ -4,12 +4,15 @@ import android.net.Uri
 import com.ghartak.app.data.firebase.FirestoreSchema
 import com.ghartak.app.data.firebase.toAppResult
 import com.ghartak.app.data.model.buildDeliveryCreateMap
+import com.ghartak.app.data.model.buildDeliveryRequestMap
 import com.ghartak.app.data.model.toDelivery
 import com.ghartak.app.data.model.toRiderLocation
 import com.ghartak.app.domain.model.Address
 import com.ghartak.app.domain.model.Delivery
 import com.ghartak.app.domain.model.DeliveryStatus
 import com.ghartak.app.domain.model.ParcelType
+import com.ghartak.app.domain.model.PaymentMethod
+import com.ghartak.app.domain.model.PricingRules
 import com.ghartak.app.domain.model.RiderLocationUpdate
 import com.ghartak.app.domain.repository.DeliveryRepository
 import com.ghartak.app.util.Result
@@ -28,6 +31,7 @@ import java.util.Date
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.random.Random
 
 @Singleton
@@ -38,6 +42,7 @@ class DeliveryRepositoryImpl @Inject constructor(
 ) : DeliveryRepository {
 
     private val deliveries get() = firestore.collection(FirestoreSchema.Collections.DELIVERIES)
+    private val requests get() = firestore.collection(FirestoreSchema.Collections.DELIVERY_REQUESTS)
     private val riderLocations get() = firestore.collection(FirestoreSchema.Collections.RIDER_LOCATIONS)
 
     private fun requireUid(): String =
@@ -51,45 +56,87 @@ class DeliveryRepositoryImpl @Inject constructor(
         parcelType: ParcelType,
         parcelWeightKg: Double?,
         parcelDescription: String?,
-        parcelImageUrl: String?
-    ): Result<Delivery> = try {
-        // Pricing kept client-side for this scaffold; a production build should compute this
-        // (and the OTP below) in a Cloud Function so a tampered client can't under-pay or read
-        // another user's OTP before the write is authorized by security rules.
-        val distanceKm = pickup.point.distanceKmTo(drop.point)
-        val deliveryFee = (25 + distanceKm * 8).coerceAtLeast(30.0)
-        val platformFee = 10.0
-        val otp = Random.nextInt(1000, 9999).toString()
+        specialInstructions: String?,
+        parcelImageUri: String?,
+        paymentMethod: PaymentMethod,
+        deliveryFee: Double,
+        platformFee: Double,
+        distanceKm: Double
+    ): Result<Delivery> {
+        return try {
+            // Reserve the document id up-front so the parcel photo can be stored under it.
+            val docRef = deliveries.document()
 
-        val data = buildDeliveryCreateMap(
-            customerId = requireUid(),
-            pickup = pickup,
-            drop = drop,
-            receiverName = receiverName,
-            receiverPhone = receiverPhone,
-            parcelType = parcelType,
-            parcelWeightKg = parcelWeightKg,
-            parcelDescription = parcelDescription,
-            parcelImageUrl = parcelImageUrl,
-            deliveryFee = deliveryFee,
-            platformFee = platformFee,
-            otp = otp
-        )
+            // A failed photo upload must not block the booking itself.
+            val imageUrl = parcelImageUri?.let { uri ->
+                (uploadParcelImage(uri, docRef.id) as? Result.Success)?.data
+            }
 
-        val docRef = deliveries.add(data).await()
-        val created = docRef.get().await()
-        Result.Success(created.toDelivery())
-    } catch (e: Exception) {
-        e.toAppResult()
+            // The OTP is generated here for the scaffold; a production build should generate it
+            // (and the fee above) in a Cloud Function so a tampered client can't forge either.
+            val otp = Random.nextInt(1000, 9999).toString()
+
+            val data = buildDeliveryCreateMap(
+                customerId = requireUid(),
+                pickup = pickup,
+                drop = drop,
+                receiverName = receiverName,
+                receiverPhone = receiverPhone,
+                parcelType = parcelType,
+                parcelWeightKg = parcelWeightKg,
+                parcelDescription = parcelDescription,
+                parcelImageUrl = imageUrl,
+                specialInstructions = specialInstructions,
+                paymentMethod = paymentMethod,
+                deliveryFee = deliveryFee,
+                platformFee = platformFee,
+                otp = otp
+            )
+
+            // The rider-visible offer carries only what a rider needs to decide (coarse areas, distance,
+            // earnings) — never the receiver's name/phone or exact addresses. Both docs commit together.
+            val uid = requireUid()
+            val offer = buildDeliveryRequestMap(
+                deliveryId = docRef.id,
+                customerId = uid,
+                pickup = pickup,
+                drop = drop,
+                parcelType = parcelType,
+                weightKg = parcelWeightKg,
+                distanceKm = distanceKm,
+                riderEarnings = PricingRules.riderEarnings(deliveryFee)
+            )
+            firestore.batch()
+                .set(docRef, data)
+                .set(requests.document(docRef.id), offer)
+                .commit()
+                .await()
+            Result.Success(docRef.get().await().toDelivery())
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            e.toAppResult()
+        }
     }
 
-    override suspend fun cancelDelivery(deliveryId: String): Result<Unit> = try {
-        deliveries.document(deliveryId)
-            .update("status", DeliveryStatus.CANCELLED.name)
-            .await()
-        Result.Success(Unit)
-    } catch (e: Exception) {
-        e.toAppResult()
+    override suspend fun cancelDelivery(deliveryId: String): Result<Unit> {
+        return try {
+            deliveries.document(deliveryId)
+                .update(
+                    mapOf(
+                        "status" to DeliveryStatus.CANCELLED.name,
+                        "cancelledAt" to FieldValue.serverTimestamp()
+                    )
+                )
+                .await()
+            // Withdraw the rider offer too (best effort: older deliveries have none).
+            runCatching { requests.document(deliveryId).update("status", "CANCELLED").await() }
+            Result.Success(Unit)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            e.toAppResult()
+        }
     }
 
     override suspend fun getDelivery(deliveryId: String): Result<Delivery> = try {
@@ -209,16 +256,4 @@ class DeliveryRepositoryImpl @Inject constructor(
     } catch (e: Exception) {
         e.toAppResult()
     }
-}
-
-/** Haversine distance in kilometers — used only for the client-side fee estimate above. */
-private fun com.ghartak.app.domain.model.LatLngPoint.distanceKmTo(other: com.ghartak.app.domain.model.LatLngPoint): Double {
-    val earthRadiusKm = 6371.0
-    val dLat = Math.toRadians(other.lat - lat)
-    val dLng = Math.toRadians(other.lng - lng)
-    val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(Math.toRadians(lat)) * Math.cos(Math.toRadians(other.lat)) *
-        Math.sin(dLng / 2) * Math.sin(dLng / 2)
-    val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-    return earthRadiusKm * c
 }

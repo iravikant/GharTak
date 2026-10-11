@@ -2,8 +2,16 @@ package com.ghartak.app.di
 
 import com.ghartak.app.data.repository.AuthRepositoryImpl
 import com.ghartak.app.data.repository.DeliveryRepositoryImpl
+import com.ghartak.app.data.repository.ProfileRepositoryImpl
+import com.ghartak.app.data.repository.RiderJobRepositoryImpl
+import com.ghartak.app.data.repository.RiderRepositoryImpl
+import com.ghartak.app.data.repository.SavedAddressRepositoryImpl
 import com.ghartak.app.domain.repository.AuthRepository
 import com.ghartak.app.domain.repository.DeliveryRepository
+import com.ghartak.app.domain.repository.ProfileRepository
+import com.ghartak.app.domain.repository.RiderJobRepository
+import com.ghartak.app.domain.repository.RiderRepository
+import com.ghartak.app.domain.repository.SavedAddressRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -21,4 +29,20 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindDeliveryRepository(impl: DeliveryRepositoryImpl): DeliveryRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSavedAddressRepository(impl: SavedAddressRepositoryImpl): SavedAddressRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindProfileRepository(impl: ProfileRepositoryImpl): ProfileRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindRiderRepository(impl: RiderRepositoryImpl): RiderRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindRiderJobRepository(impl: RiderJobRepositoryImpl): RiderJobRepository
 }

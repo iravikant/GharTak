@@ -9,46 +9,25 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4bc23409-767c-4d33-b336-0ea250b56edb" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/appInsightsSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/appInsightsSettings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+    <list default="true" id="4bc23409-767c-4d33-b336-0ea250b56edb" name="Changes" comment="ui functionality, updated (firebase backend)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/proguard-rules.pro" beforeDir="false" afterPath="$PROJECT_DIR$/app/proguard-rules.pro" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/MainActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/data/local/SessionManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/data/local/SessionManager.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/data/model/Mappers.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/data/model/Mappers.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/data/repository/AuthRepositoryImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/data/repository/AuthRepositoryImpl.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/data/repository/DeliveryRepositoryImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/data/repository/DeliveryRepositoryImpl.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/di/AppModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/di/AppModule.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/di/NetworkModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/di/NetworkModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/di/RepositoryModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/di/RepositoryModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/domain/model/Delivery.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/domain/model/Delivery.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/domain/model/LatLngPoint.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/domain/model/LatLngPoint.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/domain/repository/AuthRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/domain/repository/AuthRepository.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/domain/repository/DeliveryRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/domain/repository/DeliveryRepository.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/domain/usecase/LoginUseCase.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/domain/usecase/LoginUseCase.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/auth/LoginScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/auth/LoginScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/auth/LoginViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/auth/LoginViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/auth/RegisterScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/auth/RegisterScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/auth/RegisterViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/auth/RegisterViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/components/ParcelCard.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/components/ParcelCard.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/components/PrimaryButton.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/components/PrimaryButton.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/domain/usecase/CreateDeliveryUseCase.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/domain/usecase/CreateDeliveryUseCase.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/components/DeliveryStatusTimeline.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/components/DeliveryStatusTimeline.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/home/HomeScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/home/HomeScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/home/HomeUiState.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/home/HomeUiState.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/home/HomeViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/home/HomeViewModel.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/navigation/NavGraph.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/navigation/NavGraph.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/navigation/Screen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/navigation/Screen.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/onboarding/OnboardingScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/onboarding/OnboardingScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/splash/SplashScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/splash/SplashScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/splash/SplashViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/splash/SplashViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/theme/Color.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/theme/Color.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/theme/Theme.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/theme/Theme.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/theme/Type.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/presentation/theme/Type.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/util/Constants.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/util/Constants.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/util/Result.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ghartak/app/util/Result.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/themes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/themes.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +42,7 @@
       <entry key="_C:/Users/91827/Downloads/Ghartak" value="3Iwrgz7eH3dawcstbCPIiqcUdAE" />
     </persistenceIdMap>
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[PhysicalDevice::serial=P7VW6LOZPZJBFI6T]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[PhysicalDevice::serial=P7VW6LOZPZJBFI6T, PhysicalDevice::serial=fa56dce0]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -133,23 +112,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Android App.app.executor": "Run",
-    "Gradle.Ghartak [signingReport].executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "copilot.chat.legacySessionMetadata.migrated": "true",
-    "git-widget-placeholder": "master",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/91827/Downloads/Ghartak"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Android App.app.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Ghartak [signingReport].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;copilot.chat.legacySessionMetadata.migrated&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/91827/Downloads/Ghartak&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\91827\Downloads\Ghartak\app\src\main\res\drawable" />
@@ -266,22 +245,35 @@
       <option name="presentableId" value="Default" />
       <updated>1788686596178</updated>
     </task>
+    <task id="LOCAL-00001" summary="ui functionality, updated (firebase backend)">
+      <option name="closed" value="true" />
+      <created>1791655709063</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1791655709063</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="UnknownFeatures">
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.rules" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="ui functionality, updated (firebase backend)" />
+    <option name="LAST_COMMIT_MESSAGE" value="ui functionality, updated (firebase backend)" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
       <map>
         <entry key="com.ghartak.app">
           <value>
-            <CheckInfo lastCheckTimestamp="1791612608143" />
+            <CheckInfo lastCheckTimestamp="1791703375927" />
           </value>
         </entry>
         <entry key="com.ghartak.app.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1791612608122" />
+            <CheckInfo lastCheckTimestamp="1791703375936" />
           </value>
         </entry>
       </map>

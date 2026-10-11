@@ -24,7 +24,7 @@ android {
         // Injected at build time; never hard-code real values here.
         buildConfigField("String", "MAPS_API_KEY", "\"YOUR_MAPS_API_KEY\"")
         buildConfigField("String", "BASE_URL", "\"https://api.ghartak.com/\"")
-        manifestPlaceholders["MAPS_API_KEY"] = "YOUR_MAPS_API_KEY"
+        manifestPlaceholders["MAPS_API_KEY"] = "AIzaSyDQmzE4UP7aJDa521riqYGl4146yZT4RPA"
     }
 
     buildTypes {

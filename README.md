@@ -167,3 +167,80 @@ full light/dark support. Reusable pieces live in `presentation/components` (`Pri
 `MainScaffold` bottom navigation, `Avatar`, `StatusPill`). Screens: Splash, Onboarding (shown once), Auth, Home,
 Orders, Profile. Flows not built yet (booking, live tracking, notifications, saved addresses, help) open a
 "Coming soon" screen instead of crashing.
+
+
+---
+
+## Booking, addresses, profile, services (latest)
+
+| Feature | Where | Notes |
+|---|---|---|
+| **Send a parcel** (3 steps) | `presentation/booking` | Route → Parcel details → Review & book. One `BookingViewModel` shared by all steps (scoped to the `booking` nav graph), so Back never loses input. |
+| **Location pickup** | `presentation/location`, `location/` | Full-screen map with centre pin, address search (platform Geocoder), "use my location" (Fused Location), runtime permission handling. |
+| **Fare + ETA** | `domain/model/PricingRules`, `CalculatePriceUseCase` | Base fare + per-km + weight surcharge + ₹10 platform fee. Distance is straight-line × 1.3 (no Directions API). 40 km range limit. |
+| **Delivery receipt / tracking status** | `presentation/delivery` | Live (Firestore snapshot listener): status hero, delivery OTP card, progress timeline, route, parcel, payment, cancel. |
+| **Saved addresses** | `presentation/addresses` | Home / Office / Other, stored at `users/{uid}/savedAddresses`; usable as pickup or drop in booking. |
+| **Edit profile** | `presentation/profile/EditProfile*` | Name + profile photo (Firebase Storage `users/{uid}/profile/…`). Email and mobile are read-only (account identifiers). |
+| **Services** | `presentation/services` | All parcel types with description, weight limit and "from ₹" price; tapping one starts booking with that type preselected. |
+
+### Setup needed for the map
+1. In Google Cloud console enable **Maps SDK for Android** for your project and create an API key
+   (restrict it to package `com.ghartak.app` + your SHA-1).
+2. Put the key in **both** places in `app/build.gradle.kts`: `buildConfigField("String", "MAPS_API_KEY", ...)` and
+   `manifestPlaceholders["MAPS_API_KEY"]`.
+3. Without a key the map shows blank tiles, but search + "use my location" + confirm still work.
+
+### Known limitations (by design for now)
+* **Pricing and the delivery OTP are generated on the client.** Move both into a Cloud Function before launch.
+* **Payment:** only cash on delivery is selectable; UPI / card show "Coming soon".
+* **No rider app yet**, so a new booking stays at "Finding a rider" until a rider accepts it (rider app / console edit).
+* Address search uses the platform Geocoder; swap in Google Places Autocomplete for richer suggestions.
+
+
+---
+
+## Rider mode (find & deliver)
+
+There is no separate rider app: the same GharTak app has a **Rider mode** (Profile → *Rider mode · deliver & earn*).
+A user becomes a rider by registering a vehicle; an admin approves them; then they go online and accept jobs.
+
+### How a customer finds a rider
+1. Customer books → app writes the delivery **and** a minimal `deliveryRequests/{id}` offer in one batch
+   (coarse pickup/drop areas, ~100 m rounded pickup coordinates, parcel type, weight, distance, rider earnings —
+   *no* receiver name/phone or exact addresses).
+2. Every **online, approved** rider sees offers within **15 km** of their GPS position, nearest first, updating live
+   (Firestore snapshot listener).
+3. A rider taps **Accept** → one Firestore **transaction** claims the offer and assigns the delivery
+   (`riderId`, status `RIDER_ASSIGNED`). If two riders tap at once, the second gets "Another rider just took this delivery."
+4. The customer's screen flips instantly: rider card (name, vehicle, call button), live map with the rider's marker,
+   and distance to pickup/drop. The rider only now gets read access to the full delivery (addresses, receiver phone).
+
+### Rider flow
+Register vehicle → **pending** → admin approves → dashboard (online switch, today's earnings, requests) → accept →
+*Start trip → Reached pickup → Parcel picked up → Start delivery → enter the customer's 4-digit code → Delivered*.
+Navigation and call buttons open Google Maps / the dialer. Cash-on-delivery amount is shown to collect.
+
+### Approving a rider (admin step)
+Firebase console → Firestore → `riders/{uid}` → set `approvalStatus` to `APPROVED`. The rider's screen updates by itself.
+*Quick dev shortcut:* set `Constants.AUTO_APPROVE_RIDERS = true` and, in `firebase/firestore.rules`, change the riders
+`create` rule to `in ['PENDING','APPROVED']` (revert before launch).
+
+### Deploy the rules and the new index (required)
+`firebase deploy --only firestore:rules,firestore:indexes` — the offers list needs the `deliveryRequests`
+(status + createdAt) index, and riders/offers/claims are enforced by the new rules (field-level: a rider can't
+touch fees or the OTP; a customer can only cancel before pickup).
+
+### Testing end-to-end with one phone
+Use two accounts (two devices, or log out/in): account A books a parcel in customer mode; account B registers as a rider,
+you approve it in the console, B goes online near A's pickup and accepts. (A rider never sees their own bookings.)
+
+### Limits to know about
+* Location sharing runs while the app is open; a **foreground service** is needed to keep it alive with the screen off.
+* The delivery OTP check and fares are still client-side — move them to Cloud Functions before launch.
+* No push notifications yet (riders see offers live only while the screen is open) — FCM is the next step.
+* No ratings yet, so the rider card shows no star score until ratings exist.
+
+## Profile: changing the mobile number
+Edit profile → *Mobile number → Change* → new number → 6-digit code → verified and swapped on the account
+(`updatePhoneNumber`, or linked if no phone was attached). Firebase requires a recent sign-in for this; if it asks,
+log out and back in and retry.

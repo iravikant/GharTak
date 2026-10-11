@@ -129,6 +129,7 @@ class AuthRepositoryImpl @Inject constructor(
                     val result = when (purpose) {
                         OtpPurpose.LOGIN -> signInWithPhoneCredential(credential)
                         OtpPurpose.LINK -> linkPhoneCredential(credential)
+                        OtpPurpose.CHANGE_PHONE -> changePhoneCredential(credential)
                     }
                     trySend(
                         when (result) {
@@ -162,6 +163,39 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun verifyOtpAndLink(verificationId: String, code: String): Result<User> =
         linkPhoneCredential(PhoneAuthProvider.getCredential(verificationId, code))
+
+    override suspend fun verifyOtpAndChangePhone(verificationId: String, code: String): Result<User> =
+        changePhoneCredential(PhoneAuthProvider.getCredential(verificationId, code))
+
+    /**
+     * Replaces the account's phone number. If a phone is already attached to this account it is
+     * swapped with updatePhoneNumber; otherwise the new number is simply linked. Firebase requires a
+     * recent sign-in for this, and reports ERROR_REQUIRES_RECENT_LOGIN when it isn't.
+     */
+    private suspend fun changePhoneCredential(credential: PhoneAuthCredential): Result<User> =
+        runAuth(AuthFailure.PHONE_VERIFY) {
+            val current = firebaseAuth.currentUser
+                ?: return@runAuth Result.Error("Your session expired. Please log in again.")
+
+            val hasPhoneProvider = current.providerData.any { it.providerId == PhoneAuthProvider.PROVIDER_ID }
+            if (hasPhoneProvider) {
+                current.updatePhoneNumber(credential).await()
+            } else {
+                current.linkWithCredential(credential).await()
+            }
+            current.reload().await()
+            val refreshed = firebaseAuth.currentUser ?: current
+
+            val profile = ensureProfile(refreshed)
+            val newPhone = refreshed.phoneNumber ?: profile.phone
+            users.document(refreshed.uid)
+                .set(mapOf("phone" to newPhone, "phoneVerified" to true), SetOptions.merge())
+                .await()
+
+            val updated = profile.copy(phone = newPhone)
+            sessionManager.cacheUser(updated)
+            Result.Success(updated)
+        }
 
     private suspend fun signInWithPhoneCredential(credential: AuthCredential): Result<User> =
         runAuth(AuthFailure.PHONE_VERIFY) {

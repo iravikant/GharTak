@@ -39,6 +39,9 @@ interface AuthRepository {
     /** Completes a LINK OTP: attaches the verified phone to the signed-in account. */
     suspend fun verifyOtpAndLink(verificationId: String, code: String): Result<User>
 
+    /** Completes a CHANGE_PHONE OTP: replaces the signed-in account's phone number with the verified one. */
+    suspend fun verifyOtpAndChangePhone(verificationId: String, code: String): Result<User>
+
     // ---- Session ----
     suspend fun logout()
     fun currentUser(): Flow<User?>
