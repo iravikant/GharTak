@@ -1,6 +1,9 @@
 package com.ghartak.app.util
 
 object Constants {
+    /** Shown on the Help screen — replace with your real support address before launch. */
+    const val SUPPORT_EMAIL = "support@yelo.example"
+
     /**
      * DEV ONLY. false = new riders start as PENDING and an admin approves them (set approvalStatus to
      * APPROVED in the Firestore console). true = riders are approved instantly — only works if you also

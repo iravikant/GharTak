@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.ghartak.app.presentation.components.GharTakLogo
+import com.ghartak.app.presentation.components.YeLoLogo
 import com.ghartak.app.presentation.components.SystemBarsStyle
 import com.ghartak.app.presentation.theme.BrandGradient
 import kotlinx.coroutines.delay
@@ -64,16 +64,16 @@ fun SplashScreen(
                 alpha = alphaAnim.value
             }
         ) {
-            GharTakLogo(size = 92.dp, onGradient = true)
+            YeLoLogo(size = 92.dp, onGradient = true)
             Spacer(Modifier.height(20.dp))
             Text(
-                text = "GharTak",
+                text = "Ye Lo !!",
                 style = MaterialTheme.typography.displaySmall,
                 color = Color.White
             )
             Spacer(Modifier.height(6.dp))
             Text(
-                text = "Delivered to your door",
+                text = "Bas Bolo, Ye Lo !!",
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White.copy(alpha = 0.85f)
             )

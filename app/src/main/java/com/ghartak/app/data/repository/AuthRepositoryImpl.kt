@@ -257,7 +257,7 @@ class AuthRepositoryImpl @Inject constructor(
                 id = firebaseUser.uid,
                 name = nameOverride?.takeIf { it.isNotBlank() }
                     ?: firebaseUser.displayName?.takeIf { it.isNotBlank() }
-                    ?: "GharTak User",
+                    ?: "Ye Lo User",
                 phone = phoneOverride ?: firebaseUser.phoneNumber.orEmpty(),
                 email = firebaseUser.email,
                 role = UserRole.CUSTOMER,

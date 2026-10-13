@@ -21,11 +21,12 @@ import com.ghartak.app.presentation.booking.BookingDetailsScreen
 import com.ghartak.app.presentation.booking.BookingRouteScreen
 import com.ghartak.app.presentation.booking.BookingSummaryScreen
 import com.ghartak.app.presentation.booking.BookingViewModel
-import com.ghartak.app.presentation.components.ComingSoonScreen
 import com.ghartak.app.presentation.components.MainTab
 import com.ghartak.app.presentation.delivery.DeliveryDetailsScreen
+import com.ghartak.app.presentation.help.HelpScreen
 import com.ghartak.app.presentation.home.HomeScreen
 import com.ghartak.app.presentation.location.LocationPickerScreen
+import com.ghartak.app.presentation.notifications.NotificationsScreen
 import com.ghartak.app.presentation.onboarding.OnboardingScreen
 import com.ghartak.app.presentation.orders.OrdersScreen
 import com.ghartak.app.presentation.profile.EditProfileScreen
@@ -37,7 +38,7 @@ import com.ghartak.app.presentation.services.ServicesScreen
 import com.ghartak.app.presentation.splash.SplashScreen
 
 @Composable
-fun GharTakNavHost(navController: NavHostController = rememberNavController()) {
+fun YeLoNavHost(navController: NavHostController = rememberNavController()) {
 
     val openTab: (MainTab) -> Unit = { tab ->
         val route = when (tab) {
@@ -56,9 +57,6 @@ fun GharTakNavHost(navController: NavHostController = rememberNavController()) {
     }
     val openDelivery: (String) -> Unit = { id ->
         navController.navigate(Screen.DeliveryDetails.createRoute(id))
-    }
-    val openFeature: (String) -> Unit = { feature ->
-        navController.navigate(Screen.ComingSoon.createRoute(feature))
     }
     val back: () -> Unit = { navController.popBackStack() }
 
@@ -112,7 +110,7 @@ fun GharTakNavHost(navController: NavHostController = rememberNavController()) {
                 onServiceSelected = { type -> startBooking(type.name) },
                 onSeeAllServices = { navController.navigate(Screen.Services.route) },
                 onOpenDelivery = openDelivery,
-                onOpenNotifications = { openFeature(Screen.ComingSoon.FEATURE_NOTIFICATIONS) },
+                onOpenNotifications = { navController.navigate(Screen.Notifications.route) },
                 onTabSelected = openTab
             )
         }
@@ -131,7 +129,8 @@ fun GharTakNavHost(navController: NavHostController = rememberNavController()) {
                 onEditProfile = { navController.navigate(Screen.EditProfile.route) },
                 onOpenSavedAddresses = { navController.navigate(Screen.SavedAddresses.route) },
                 onOpenRiderMode = { navController.navigate(Screen.RiderHome.route) },
-                onOpenFeature = openFeature,
+                onOpenNotifications = { navController.navigate(Screen.Notifications.route) },
+                onOpenHelp = { navController.navigate(Screen.Help.route) },
                 onLoggedOut = {
                     navController.navigate(Screen.Auth.route) {
                         // Clear the whole back stack so Back can't return to a signed-in screen.
@@ -295,20 +294,13 @@ fun GharTakNavHost(navController: NavHostController = rememberNavController()) {
             RiderDeliveryScreen(onBack = back)
         }
 
-        // ------------------------------------------------------------ placeholders
-        composable(
-            route = Screen.ComingSoon.route,
-            arguments = listOf(navArgument(Screen.ComingSoon.ARG_FEATURE) { type = NavType.StringType })
-        ) { entry ->
-            val feature = entry.arguments?.getString(Screen.ComingSoon.ARG_FEATURE).orEmpty()
-            val (title, message) = when (feature) {
-                Screen.ComingSoon.FEATURE_NOTIFICATIONS ->
-                    "Notifications" to "Delivery updates and offers will show up here."
-                Screen.ComingSoon.FEATURE_HELP ->
-                    "Help & support" to "Chat with us and report delivery issues from here."
-                else -> "GharTak" to "This part of the app is on its way."
-            }
-            ComingSoonScreen(title = title, message = message, onBack = back)
+        // ------------------------------------------------------------ notifications & help
+        composable(Screen.Notifications.route) {
+            NotificationsScreen(onBack = back, onOpenDelivery = openDelivery)
+        }
+
+        composable(Screen.Help.route) {
+            HelpScreen(onBack = back)
         }
     }
 }

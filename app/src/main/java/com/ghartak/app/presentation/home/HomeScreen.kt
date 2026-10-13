@@ -421,7 +421,7 @@ private fun PromoBanner(modifier: Modifier = Modifier) {
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                text = "Use code GHAR50 at checkout",
+                text = "Use code YELO50 at checkout",
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White.copy(alpha = 0.9f)
             )

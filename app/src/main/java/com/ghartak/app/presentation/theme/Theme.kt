@@ -58,14 +58,14 @@ private val DarkColors = darkColorScheme(
  * on every device, and Material You would repaint the whole app in the user's wallpaper colours.
  */
 @Composable
-fun GharTakTheme(
+fun YeLoTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
     MaterialTheme(
         colorScheme = if (darkTheme) DarkColors else LightColors,
-        typography = GharTakTypography,
-        shapes = GharTakShapes,
+        typography = YeLoTypography,
+        shapes = YeLoShapes,
         content = content
     )
 }

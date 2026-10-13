@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "GharTak"
+rootProject.name = "YeLo"
 include(":app")

@@ -1,13 +1,13 @@
 <resources>
     <!-- Main app theme (set from MainActivity.onCreate once the splash window has been shown). -->
-    <style name="Theme.GharTak" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.YeLo" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowBackground">@color/app_background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
     <!-- Launch theme: brand-coloured window so there is no white flash before Compose draws. -->
-    <style name="Theme.GharTak.Splash" parent="Theme.GharTak">
+    <style name="Theme.YeLo.Splash" parent="Theme.YeLo">
         <item name="android:windowBackground">@color/splash_background</item>
         <item name="android:windowSplashScreenBackground">@color/splash_background</item>
     </style>

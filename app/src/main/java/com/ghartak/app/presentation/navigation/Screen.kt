@@ -51,12 +51,6 @@ sealed class Screen(val route: String) {
         fun createRoute(deliveryId: String) = "rider_delivery/$deliveryId"
     }
 
-    /** Placeholder destination for flows that aren't built yet (see FEATURE_* keys). */
-    data object ComingSoon : Screen("coming_soon/{feature}") {
-        const val ARG_FEATURE = "feature"
-        const val FEATURE_NOTIFICATIONS = "notifications"
-        const val FEATURE_HELP = "help"
-
-        fun createRoute(feature: String) = "coming_soon/$feature"
-    }
+    data object Notifications : Screen("notifications")
+    data object Help : Screen("help")
 }
