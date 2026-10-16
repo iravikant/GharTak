@@ -31,9 +31,13 @@ import com.ghartak.app.presentation.onboarding.OnboardingScreen
 import com.ghartak.app.presentation.orders.OrdersScreen
 import com.ghartak.app.presentation.profile.EditProfileScreen
 import com.ghartak.app.presentation.profile.ProfileScreen
+import com.ghartak.app.presentation.rider.RiderDeliveryDetailsScreen
 import com.ghartak.app.presentation.rider.RiderDeliveryScreen
+import com.ghartak.app.presentation.rider.RiderEarningsScreen
+import com.ghartak.app.presentation.rider.RiderHistoryScreen
 import com.ghartak.app.presentation.rider.RiderHomeScreen
 import com.ghartak.app.presentation.rider.RiderRegisterScreen
+import com.ghartak.app.presentation.rider.RiderTab
 import com.ghartak.app.presentation.services.ServicesScreen
 import com.ghartak.app.presentation.splash.SplashScreen
 
@@ -59,6 +63,24 @@ fun YeLoNavHost(navController: NavHostController = rememberNavController()) {
         navController.navigate(Screen.DeliveryDetails.createRoute(id))
     }
     val back: () -> Unit = { navController.popBackStack() }
+
+    // Rider mode: three tabs (Dashboard / History / Earnings) plus a way back to customer mode.
+    val openRiderTab: (RiderTab) -> Unit = { tab ->
+        val route = when (tab) {
+            RiderTab.DASHBOARD -> Screen.RiderHome.route
+            RiderTab.HISTORY -> Screen.RiderHistory.route
+            RiderTab.EARNINGS -> Screen.RiderEarnings.route
+        }
+        navController.navigate(route) {
+            popUpTo(Screen.RiderHome.route) { saveState = true }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+    val exitRiderMode: () -> Unit = { navController.popBackStack(Screen.RiderHome.route, inclusive = true) }
+    val openRiderJobDetails: (String) -> Unit = { id ->
+        navController.navigate(Screen.RiderJobDetails.createRoute(id))
+    }
 
     NavHost(navController = navController, startDestination = Screen.Splash.route) {
 
@@ -277,10 +299,35 @@ fun YeLoNavHost(navController: NavHostController = rememberNavController()) {
         // ------------------------------------------------------------ rider mode
         composable(Screen.RiderHome.route) {
             RiderHomeScreen(
-                onExitRiderMode = back,
+                onExitRiderMode = exitRiderMode,
                 onRegister = { navController.navigate(Screen.RiderRegister.route) },
-                onOpenDelivery = { id -> navController.navigate(Screen.RiderDelivery.createRoute(id)) }
+                onOpenDelivery = { id -> navController.navigate(Screen.RiderDelivery.createRoute(id)) },
+                onOpenJobDetails = openRiderJobDetails,
+                onTabSelected = openRiderTab
             )
+        }
+
+        composable(Screen.RiderHistory.route) {
+            RiderHistoryScreen(
+                onTabSelected = openRiderTab,
+                onExitRiderMode = exitRiderMode,
+                onOpenJob = openRiderJobDetails
+            )
+        }
+
+        composable(Screen.RiderEarnings.route) {
+            RiderEarningsScreen(
+                onTabSelected = openRiderTab,
+                onExitRiderMode = exitRiderMode,
+                onOpenJob = openRiderJobDetails
+            )
+        }
+
+        composable(
+            route = Screen.RiderJobDetails.route,
+            arguments = listOf(navArgument(Screen.RiderJobDetails.ARG_ID) { type = NavType.StringType })
+        ) {
+            RiderDeliveryDetailsScreen(onBack = back)
         }
 
         composable(Screen.RiderRegister.route) {

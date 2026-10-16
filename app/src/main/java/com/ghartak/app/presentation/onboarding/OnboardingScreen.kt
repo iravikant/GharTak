@@ -39,20 +39,23 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ghartak.app.presentation.components.PrimaryButton
 import com.ghartak.app.presentation.components.SystemBarsStyle
-import com.ghartak.app.presentation.theme.BrandGradient
+import com.ghartak.app.presentation.components.YeLoLogo
+import com.ghartak.app.presentation.components.brandBackground
 import kotlinx.coroutines.launch
 
 private data class OnboardingPage(
     val icon: ImageVector,
     val title: String,
-    val description: String
+    val description: String,
+    val useLogo: Boolean = false
 )
 
 private val pages = listOf(
     OnboardingPage(
         Icons.Filled.LocalShipping,
         "Send parcels in minutes",
-        "Book a rider for any local delivery — documents, food or packages — and we'll handle the rest."
+        "Book a rider for any local delivery — documents, food or packages — and we'll handle the rest.",
+        useLogo = true
     ),
     OnboardingPage(
         Icons.Filled.MyLocation,
@@ -131,29 +134,33 @@ private fun OnboardingPageContent(page: OnboardingPage) {
                 .weight(1.1f)
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(bottomStart = 44.dp, bottomEnd = 44.dp))
-                .background(BrandGradient),
+                .brandBackground(),
             contentAlignment = Alignment.Center
         ) {
-            Box(
-                modifier = Modifier
-                    .size(200.dp)
-                    .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.12f)),
-                contentAlignment = Alignment.Center
-            ) {
+            if (page.useLogo) {
+                YeLoLogo(size = 260.dp)
+            } else {
                 Box(
                     modifier = Modifier
-                        .size(132.dp)
+                        .size(200.dp)
                         .clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.2f)),
+                        .background(Color.White.copy(alpha = 0.12f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = page.icon,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(68.dp)
-                    )
+                    Box(
+                        modifier = Modifier
+                            .size(132.dp)
+                            .clip(CircleShape)
+                            .background(Color.White.copy(alpha = 0.2f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = page.icon,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(68.dp)
+                        )
+                    }
                 }
             }
         }

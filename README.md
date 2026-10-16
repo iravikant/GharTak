@@ -24,16 +24,35 @@ with two modes in one app: **Customer** (book, track, rate) and **Rider** (go on
 - **Edit profile**: name, photo, and **mobile number** (OTP-verified change)
 - **Help & support**: FAQ, report a problem (stored for admins), your reports, email support
 
-**Rider** (Profile → *Rider mode*)
-- Register vehicle → admin approval → dashboard with **online/offline** switch, today's earnings, deliveries, rating
-- Live **job offers** within 15 km, nearest first, with the rider's earnings; first rider to accept wins (atomic)
-- Job screen: stage buttons (start trip → at pickup → picked up → start delivery), Google Maps navigation, call
+**Rider** (Profile → *Rider mode*) — three tabs plus a one-tap switch back to customer mode
+- **Dashboard**: online/offline switch, today's earnings · deliveries · rating, live **job offers** within 15 km (nearest first,
+  with your earnings; first rider to accept wins, atomically), your active job, a **last-7-days earnings chart** and recent deliveries
+- **History**: every finished job (delivered / cancelled), filter chips, paginated; tap one for the full receipt
+- **Earnings**: lifetime total, today / last 7 days / this month / all time, 7-day bar chart, average per delivery, best day,
+  cash collected on delivery, and an earnings line per delivery
+- **Delivery details** (read-only receipt): earnings breakdown (customer paid → your share), timeline (booked → accepted →
+  picked up → delivered), route, parcel, and the **rating the customer gave you**
+- **Live job screen**: stage buttons (start trip → at pickup → picked up → start delivery), Google Maps navigation, call
   sender/receiver, cash-on-delivery reminder, **OTP handover** to complete
+- Register vehicle → admin approval before any of this unlocks
 
 **Quality**
-- Material 3 design system, light/dark, branded adaptive icon, skeleton loading, empty/error states everywhere
+- Material 3 design system in the brand palette (blue · green · black · white), light/dark, mascot launcher icon,
+  skeleton loading, empty/error states everywhere
 - Offline-friendly (Firestore cache), clear error messages (auth, OTP delivery diagnostics, Firestore, Storage)
 - Firestore/Storage **security rules** with field-level restrictions, unit tests for fare/validation logic
+
+---
+
+## Branding & theme
+- **Logo / launcher icon**: the Ye Lo !! mascot artwork. In-app it is `drawable-nodpi/yelo_logo.webp` (splash, sign-in header,
+  onboarding); the adaptive launcher icon is the same artwork on a black → blue → green gradient
+  (`ic_launcher_bg.xml` + `ic_launcher_foreground.png`). Android 12+ also uses it on the system splash screen.
+- **Palette** (`presentation/theme/Color.kt`): black `#050A12`, blue `#1560E8` / `#0A47B8`, green `#12A566` / `#0B8F58`, white/cool-grey
+  surfaces. `BrandGradient` (black → blue → green) paints headers and hero cards; `ButtonGradient` (blue → green) paints primary
+  buttons. Dynamic wallpaper colours are off so the brand looks identical on every device. Amber is used only for star ratings
+  and "waiting" states.
+- **`branding/`** holds the 1024 px logo and a ready-made 512 px **Play Store icon** (`play_store_icon_512.png`).
 
 ---
 
@@ -100,8 +119,8 @@ Firebase console → Authentication → Sign-in method → Phone → **Phone num
 ```
 ./gradlew testDebugUnitTest
 ```
-Covers fare calculation, weight surcharges, range/limits, rider earnings, Haversine distance, input validation and address
-anonymising (`app/src/test`).
+Covers fare calculation, weight surcharges, range/limits, rider earnings and the dashboard/earnings statistics (today / week / month /
+all-time, 7-day buckets, cash collected), Haversine distance, input validation and address anonymising (`app/src/test`).
 
 ---
 

@@ -18,11 +18,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.ghartak.app.presentation.theme.BrandGradient
+import com.ghartak.app.presentation.theme.Blue600
+import com.ghartak.app.presentation.theme.ButtonGradient
 
 /** Full-width gradient call-to-action with a built-in loading state. */
 @Composable
@@ -35,8 +37,9 @@ fun PrimaryButton(
     icon: ImageVector? = null
 ) {
     val shape = RoundedCornerShape(16.dp)
+    val active = enabled && !loading
     val background = if (enabled) {
-        Modifier.background(BrandGradient)
+        Modifier.background(ButtonGradient)
     } else {
         Modifier.background(MaterialTheme.colorScheme.outlineVariant)
     }
@@ -46,9 +49,15 @@ fun PrimaryButton(
         modifier = modifier
             .fillMaxWidth()
             .height(54.dp)
+            .shadow(
+                elevation = if (active) 8.dp else 0.dp,
+                shape = shape,
+                ambientColor = Blue600.copy(alpha = 0.35f),
+                spotColor = Blue600.copy(alpha = 0.45f)
+            )
             .clip(shape)
             .then(background)
-            .clickable(enabled = enabled && !loading, role = Role.Button, onClick = onClick),
+            .clickable(enabled = active, role = Role.Button, onClick = onClick),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {

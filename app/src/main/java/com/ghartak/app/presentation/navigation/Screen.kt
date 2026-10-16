@@ -46,6 +46,13 @@ sealed class Screen(val route: String) {
     // ---- rider mode ----
     data object RiderHome : Screen("rider_home")
     data object RiderRegister : Screen("rider_register")
+    data object RiderHistory : Screen("rider_history")
+    data object RiderEarnings : Screen("rider_earnings")
+    /** Read-only receipt for a finished job (the live job screen is RiderDelivery). */
+    data object RiderJobDetails : Screen("rider_job/{deliveryId}") {
+        const val ARG_ID = "deliveryId"
+        fun createRoute(deliveryId: String) = "rider_job/$deliveryId"
+    }
     data object RiderDelivery : Screen("rider_delivery/{deliveryId}") {
         const val ARG_ID = "deliveryId"
         fun createRoute(deliveryId: String) = "rider_delivery/$deliveryId"

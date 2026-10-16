@@ -44,7 +44,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ghartak.app.domain.model.Delivery
 import com.ghartak.app.domain.model.DeliveryStatus
+import com.ghartak.app.domain.model.LatLngPoint
 import com.ghartak.app.domain.model.ParcelType
+import com.ghartak.app.domain.model.RiderLocationUpdate
 import com.ghartak.app.presentation.components.Avatar
 import com.ghartak.app.presentation.components.BannerType
 import com.ghartak.app.presentation.components.EmptyState
@@ -56,11 +58,19 @@ import com.ghartak.app.presentation.components.PrimaryButton
 import com.ghartak.app.presentation.components.RouteLine
 import com.ghartak.app.presentation.components.SkeletonBox
 import com.ghartak.app.presentation.components.SystemBarsStyle
+import com.ghartak.app.presentation.components.brandBackground
 import com.ghartak.app.presentation.components.icon
 import com.ghartak.app.presentation.components.label
 import com.ghartak.app.presentation.components.negativeVerticalOffset
-import com.ghartak.app.presentation.theme.BrandGradient
 import com.ghartak.app.presentation.theme.PromoGradient
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
 import java.util.Calendar
 
 @Composable
@@ -91,6 +101,14 @@ fun HomeScreen(
                     modifier = Modifier
                         .negativeVerticalOffset(36.dp)
                         .padding(horizontal = 20.dp)
+                )
+            }
+
+            item {
+                NearbyRidersMap(
+                    userLocation = state.userLocation,
+                    riderLocations = state.riderLocations,
+                    modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp)
                 )
             }
 
@@ -190,12 +208,87 @@ fun HomeScreen(
 }
 
 @Composable
+private fun NearbyRidersMap(
+    userLocation: LatLngPoint?,
+    riderLocations: List<RiderLocationUpdate>,
+    modifier: Modifier = Modifier
+) {
+    val defaultLocation = LatLngPoint(12.9716, 77.5946) // Bengaluru fallback
+    val center = userLocation ?: riderLocations.firstOrNull()?.point ?: defaultLocation
+
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(LatLng(center.lat, center.lng), 13f)
+    }
+
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+    ) {
+        Column(modifier = Modifier.padding(18.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Available riders nearby",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = "${riderLocations.size} online",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+            Spacer(Modifier.height(14.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .clip(RoundedCornerShape(16.dp))
+            ) {
+                GoogleMap(
+                    modifier = Modifier.fillMaxSize(),
+                    cameraPositionState = cameraPositionState,
+                    uiSettings = MapUiSettings(
+                        zoomControlsEnabled = false,
+                        mapToolbarEnabled = false,
+                        myLocationButtonEnabled = false,
+                        compassEnabled = false,
+                        scrollGesturesEnabled = true,
+                        zoomGesturesEnabled = true
+                    )
+                ) {
+                    userLocation?.let { loc ->
+                        Marker(
+                            state = MarkerState(position = LatLng(loc.lat, loc.lng)),
+                            title = "You are here",
+                            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
+                        )
+                    }
+                    riderLocations.forEach { rider ->
+                        Marker(
+                            state = MarkerState(position = LatLng(rider.point.lat, rider.point.lng)),
+                            title = "Rider",
+                            snippet = if (rider.deliveryId != null) "On delivery" else "Available",
+                            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 private fun HomeHeader(userName: String, onNotifications: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))
-            .background(BrandGradient)
+            .brandBackground()
             .statusBarsPadding()
             .padding(start = 20.dp, end = 12.dp, top = 16.dp, bottom = 64.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -340,7 +433,7 @@ private fun ActiveDeliveryCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
-            .background(BrandGradient)
+            .brandBackground()
             .clickable(onClick = onClick)
             .padding(20.dp)
     ) {
@@ -397,7 +490,7 @@ private fun ActiveDeliveryCard(
             drop = delivery.drop.formattedAddress,
             textColor = Color.White,
             pickupDotColor = Color.White,
-            dropDotColor = Color(0xFFFBBF24),
+            dropDotColor = Color(0xFF9CC4FF),
             lineColor = Color.White.copy(alpha = 0.4f)
         )
     }
